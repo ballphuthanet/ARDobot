@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="4" size="0.058500 0.058500" />
+    <ImageTarget name="3" size="0.058500 0.058500" />
+    <ImageTarget name="2" size="0.058500 0.058500" />
+    <ImageTarget name="1" size="0.058500 0.058500" />
+    <ImageTarget name="J4" size="0.030000 0.030295" />
+    <ImageTarget name="J1" size="0.045000 0.044000" />
+    <ImageTarget name="J2" size="0.030000 0.029042" />
+    <ImageTarget name="J3" size="0.030000 0.030084" />
+    <ImageTarget name="xyzr" size="0.045000 0.043547" />
+    <ImageTarget name="suggest" size="0.040000 0.039827" />
+    <ImageTarget name="logo" size="0.040000 0.020571" />
+    <ImageTarget name="script_how" size="0.166000 0.328862" />
+    <ImageTarget name="block_how" size="0.166000 0.442667" />
+    <ImageTarget name="write_how" size="0.166000 0.241562" />
+    <ImageTarget name="teach_how" size="0.068000 0.124777" />
+    <ImageTarget name="setting" size="0.166000 0.293865" />
+    <ImageTarget name="write_and_draw" size="0.125000 0.174900" />
+    <ImageTarget name="script" size="0.125000 0.176056" />
+    <ImageTarget name="mouse" size="0.125000 0.176308" />
+    <ImageTarget name="leap_motion" size="0.125000 0.175351" />
+    <ImageTarget name="laser" size="0.125000 0.175452" />
+    <ImageTarget name="blockly" size="0.125000 0.176768" />
+    <ImageTarget name="add_more" size="0.125000 0.176559" />
+    <ImageTarget name="3d" size="0.125000 0.175601" />
+    <ImageTarget name="teach_and_play" size="0.125000 0.174205" />
+    <ImageTarget name="OP" size="0.102000 0.069700" />
+    <ImageTarget name="connect" size="0.148000 0.091778" />
+  </Tracking>
+</QCARConfig>
