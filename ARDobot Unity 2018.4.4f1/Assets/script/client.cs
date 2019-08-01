@@ -1,4 +1,6 @@
-﻿using System;
+﻿//-----------------------------------------------------------header----------------------------------------------------------
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -7,20 +9,19 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
+//----------------------------------------------------------------------------------------------------------------------------
+
 public class client : MonoBehaviour
-{
+{   
+    //--------------------------------------------------------------------------------------------------------
+
+    //ให้เป็น public เพื่อความง่ายในการลากวางใน Unity
     public Text Xval, Yval, Zval, Rval, J1val, J2val, J3val, J4val;
     public Text J1val1, J2val1, J3val1, J4val1;
     public Toggle toggleswitch;
     public GameObject inputfieldX;
     public GameObject inputfieldY;
     public GameObject inputfieldZ;
-
-    /*public InputField X;
-    public InputField Y;
-    public InputField Z;*/
-
-
 
     //#region private members 	
     private TcpClient socketConnection;
@@ -29,25 +30,22 @@ public class client : MonoBehaviour
     private bool connectcon = false;
     private bool exitcon = false;
     private string onedata;
+
     //private bool upbreak;
     private string control;
-    
 
-    //private string A = "[A:REG]";
-    //private string B = "[B:yaa connect laew]";
+    //----------------------------------------------------------------------------------------------------------
 
-    //#endregion
     // Use this for initialization 	
     void Start()
     {
+        //ติดต่อ Server
         ConnectToTcpServer();
 
+        //Text เริ่มต้นที่แสดงตำแหน่งให้เป็น 0
         Xval.text = "0";
-
         Yval.text = "0";
-
         Zval.text = "0";
-
         Rval.text = "0";
 
         J1val.text = "0";
@@ -58,47 +56,42 @@ public class client : MonoBehaviour
         J3val1.text = J3val.text;
         J4val.text = "0";
         J4val1.text = J4val.text;
+
         control = "[Dobot:Hold]";
 
     }
+
+    //----------------------------------------------------------------------------------------------------------
+
     // Update is called once per frame
     void Update()
     {   
-        
+        //อัพเดทค่าตำแหน่งที่ได้รับจาก Dobot
         if (onedata.Contains("[Dobot:X="))
         {
             Xval.text = onedata.Trim('[', 'D', 'o', 'b', 'o', 't', ':', 'X', '=', ']');
-
         }
         else if (onedata.Contains("[Dobot:Y="))
         {
             Yval.text = onedata.Trim('[', 'D', 'o', 'b', 'o', 't', ':', 'Y', '=', ']');
-
-
         }
         else if (onedata.Contains("[Dobot:Z="))
         {
             Zval.text = onedata.Trim('[', 'D', 'o', 'b', 'o', 't', ':', 'Z', '=', ']');
-
-
         }
         else if (onedata.Contains("[Dobot:R="))
         {
             Rval.text = onedata.Trim('[', 'D', 'o', 'b', 'o', 't', ':', 'R', '=', ']');
-
-
         }
         else if (onedata.Contains("[Dobot:Ji="))
         {
             J1val.text = onedata.Trim('[', 'D', 'o', 'b', 'o', 't', ':', 'X', '=', ']', 'i', 'J');
             J1val1.text = J1val.text;
-
         }
         else if (onedata.Contains("[Dobot:Jii="))
         {
             J2val.text = onedata.Trim('[', 'D', 'o', 'b', 'o', 't', ':', 'X', '=', ']', 'i', 'J');
             J2val1.text = J2val.text;
-
         }
         else if (onedata.Contains("[Dobot:Jiii="))
         {
@@ -118,7 +111,6 @@ public class client : MonoBehaviour
     }
 
     //---------------------connect------------------------
-
     
     public void connect()
     {
@@ -138,222 +130,148 @@ public class client : MonoBehaviour
 
     }
 
-    //----------------------XYZR---------------------------
+    //----------------------กด XYZR---------------------------
+
     public void Xpos()
     {
-
-        //control = "[Dobot:Xpos]";
-        SendMessage("[Dobot:Xpos]");
-        
+        SendMessage("[Dobot:Xpos]");       
     }
     public void Xneg()
     {
-        //control = "[Dobot:Xneg]";
         SendMessage("[Dobot:Xneg]");
     }
     public void Ypos()
     {    
-        //control = "[Dobot:Ypos]";
         SendMessage("[Dobot:Ypos]");
     }
     public void Yneg()
     { 
-        //control = "[Dobot:Yneg]";
         SendMessage("[Dobot:Yneg]");
-
     }
     public void Zpos()
-    {
-         
-        //control = "[Dobot:Zpos]";
+    { 
         SendMessage("[Dobot:Zpos]");
     }
     public void Zneg()
     {   
-        //control = "[Dobot:Zneg]";
         SendMessage("[Dobot:Zneg]");
-
     }
     public void Rpos()
     {
-   
-        //control = "[Dobot:Rpos]";
         SendMessage("[Dobot:Rpos]");
-
     }
     public void Rneg()
     {   
-        //control = "[Dobot:Rneg]";
         SendMessage("[Dobot:Rneg]");
-
     }
 
-    //----------------------Joint---------------------
+    //----------------------กด Joint---------------------
+
     public void J1pos()
     {
-     
-        //control = "[Dobot:J1pos]";
         SendMessage("[Dobot:J1pos]");
-
     }
     public void J1neg()
     {
-   
-        //control = "[Dobot:J1neg]";
         SendMessage("[Dobot:J1neg]");
-
     }
     public void J2pos()
     {
-    
-        //control = "[Dobot:J2pos]";
         SendMessage("[Dobot:J2pos]");
-
     }
     public void J2neg()
     {
-    
-        //control = "[Dobot:J2neg]";
         SendMessage("[Dobot:J2neg]");
-
     }
     public void J3pos()
     {
- 
-        //control = "[Dobot:J3pos]";
         SendMessage("[Dobot:J3pos]");
-
     }
     public void J3neg()
     {
-
-        //control = "[Dobot:J3neg]";
         SendMessage("[Dobot:J3neg]");
     }
     public void J4pos()
     {   
-        //control = "[Dobot:J4pos]";
         SendMessage("[Dobot:J4pos]");
-
     }
     public void J4neg()
     {
-   
-        //control = "[Dobot:J4neg]";
         SendMessage("[Dobot:J4neg]");
-
     }
 
-    //--------------------------------Home---------------------------------------------------------
+    //--------------------------------กด Home---------------------------------------------------------
 
     public void Home()
     {
-
         SendMessage("[Dobot:Home]");
-
     }
 
-    //--------------------------------Command---------------------------------------------------------
+    //--------------------------------กด Stop---------------------------------------------------------
 
     public void ForceStop()
     {
-
         SendMessage("[Dobot:Stop]");
-
     }
 
-    //--------------------------------EXIT---------------------------------------------------------
+    //--------------------------------กด EXIT---------------------------------------------------------
 
     public void EXIT()
     {
-
         SendMessage("[Dobot:EXIT]");
         exitcon = true;
-
     }
 
+    //---------------------------------toggle เปิด/เปิด หัวดูด------------------------------------
 
-    //------------------------------------test-----------------------------------------------------
-
-    /*public void UpBreak()
-    {
-        upbreak = true;
-
-    }*/
-
-
-    //----------------------------------------------------------------------------
-    //---------------------------------toggle------------------------------------
     public void toggle()
     {
-
-
-        if (toggleswitch.isOn)
+        if (toggleswitch.isOn)                  //ถ้าติ๊กให้สั่งDobot ให้เปิดหัวดูด
         {
             SendMessage("[Dobot:ONCUP]");
             Debug.Log("ONCUP");
             Console.WriteLine("ONCUP");
-        }else{
+        }else{                                  //ถ้าไม่ติ๊กให้สั่งDobot ให้ปิดหัวดูด
             SendMessage("[Dobot:OFFCUP]");
             Debug.Log("OFFCUP");
             Console.WriteLine("OFFCUP");
         }
-
-
-
     }
-    //----------------------------------run-----------------------------------------
+    //----------------------------------กดเคลื่อนที่แบบ MOV-----------------------------------------
+
     public void MOV()
-    {
+    {   
+        //รับค่าตำแหน่งจากกล่องข้อความมาใส่ในตัวแปร
         string x = inputfieldX.GetComponent<Text>().text;
         string y = inputfieldY.GetComponent<Text>().text;
         string z = inputfieldZ.GetComponent<Text>().text;
 
-        /*string x = X.text;
-        string y = Y.text;
-        string z = Z.text;*/
-
         if ((x != "") && (y != "") && (z != ""))
         {
+            //ส่งไปให้ Server
             SendMessage("[Dobot:MOV," + x + "!" + y + "@" + z + "]");
-        }
-
-        
-
-       /* Debug.Log("x=" + x);
-        Debug.Log("y=" + y);
-        Debug.Log("z=" + z);
-        Console.WriteLine("x=" + x);
-        Console.WriteLine("y=" + y);
-        Console.WriteLine("z=" + z);*/
-        
+        }        
     }
+
+    //----------------------------------กดเคลื่อนที่แบบ JUMP-----------------------------------------
 
     public void JUMP()
     {
-
+        //รับค่าตำแหน่งจากกล่องข้อความมาใส่ในตัวแปร
         string x = inputfieldX.GetComponent<Text>().text;
         string y = inputfieldY.GetComponent<Text>().text;
         string z = inputfieldZ.GetComponent<Text>().text;
-        /*string x = X.text;
-        string y = Y.text;
-        string z = Z.text;*/
-
 
         if ((x != "") && (y != "") && (z != ""))
         {
+            //ส่งไปให้ Server
             SendMessage("[Dobot:JUMP," + x + "!" + y + "@" + z + "]");
         }
-
-        /*Debug.Log("x=" + x);
-        Debug.Log("y=" + y);
-        Debug.Log("z=" + z);
-        Console.WriteLine("x=" + x);
-        Console.WriteLine("y=" + y);
-        Console.WriteLine("z=" + z);*/
-
     }
-    //-----------------------------------------------------------------------------
+
+    //-----------------------------------Socket---------------------------------------------------------
+
+
     /// <summary> 	
     /// Setup socket connection. 	
     /// </summary> 	
@@ -373,6 +291,9 @@ public class client : MonoBehaviour
             Debug.Log("On client connect exception " + e);
         }
     }
+
+
+    //--------------------------------------------------------------------------------------------------------------------
     /// <summary> 	
     /// Runs in background clientReceiveThread; Listens for incomming data. 	
     /// </summary>     
@@ -426,6 +347,9 @@ public class client : MonoBehaviour
             Debug.Log("Socket exception: " + socketException);
         }
     }
+
+
+    //--------------------------------------------------------------------------------------------------------------------
     /// <summary> 	
     /// Send message to server using socket connection. 	
     /// </summary> 	
@@ -455,21 +379,13 @@ public class client : MonoBehaviour
         }
     }
 
-
+    //---------------------------------------------------Hold-----------------------------------------------
     private void Hold()
     {
         try
         {
             while (true)
             {
-                /*if (upbreak == true)
-                {
-                    control = "[Dobot:Hold]";
-                    upbreak = false;
-                }
-
-                SendMessage(control);*/
-
                 SendMessage("Hold");
                 Thread.Sleep(10000);
 
@@ -488,3 +404,4 @@ public class client : MonoBehaviour
 
 
 }
+//--------------------------------------------------------------------------------------------------------------------

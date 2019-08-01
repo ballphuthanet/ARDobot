@@ -1,3 +1,4 @@
+
  #-------------------------------------header------------------------------------------------------
 from threading import Thread
 import DobotDllType as dType
@@ -19,19 +20,21 @@ J1angle=0
 J2angle=0
 J3angle=0
 
-
+#เงื่อนไขที่จะเอาไว้หลุด loop
 ExitCon=False
 ConnectCon=False
 
-#Load Dll
+#Load Dll ของ Dobot
 api = dType.load()
 
+#ให้ s แทน socket.socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
     
 
 #---------------------------------Thread ส่งข้อมูล--------------------------------------------------------------------------------
 def Thread1():
 
+    #บอกให้รู้ว่านี้คือตัวแปร global
     global api
     global s
     global J1angle
@@ -41,14 +44,15 @@ def Thread1():
     global ExitCon
     global ConnectCon
     
-
+    #ดักเวลากดออกจะได้หลุด Loop
     while ExitCon == False:  
-
+        #ถ้ากด Connect ให้เริ่มส่งต่าตำแหน่งของ Dobot ไปยัง Unity
         if(ConnectCon==True) and (ExitCon==False):  
 
             time.sleep(5)
-            while (ExitCon==False) and (ConnectCon==True): 
+            while (ExitCon==False) and (ConnectCon==True): #วนให้ส่งเรื่อยๆจนกว่าจะกดออก
 
+                #คำสั่งรับค่าจากจุดต่างๆ    
                 Xpose = dType.GetPoseEx(api, 1)
                 if(ExitCon==True) or (ConnectCon==False) :
                     break   
@@ -71,35 +75,14 @@ def Thread1():
                 if(ExitCon==True) or (ConnectCon==False) :
                     break   
 
-                #s.sendall(bytes('[Unity:X='.encode("utf-8")) + bytes(str(Xpose).encode("utf-8")) + bytes(']'.encode("utf-8")))
-                s.sendall(bytes(('[Unity:X=' + str(Xpose) + ']').encode("utf-8")))
-                        
-                
-                #s.sendall(bytes('[Unity:Y='.encode("utf-8")) + bytes(str(Ypose).encode("utf-8")) + bytes(']'.encode("utf-8")))
+                #ส่งไปยัง Server ให้ส่งข้อมูลไปยัง Dobot
+                s.sendall(bytes(('[Unity:X=' + str(Xpose) + ']').encode("utf-8")))                      
                 s.sendall(bytes(('[Unity:Y=' + str(Ypose) + ']').encode("utf-8")))
-
-                
-                #s.sendall(bytes('[Unity:Z='.encode("utf-8")) + bytes(str(Zpose).encode("utf-8")) + bytes(']'.encode("utf-8")))
                 s.sendall(bytes(('[Unity:Z=' + str(Zpose) + ']').encode("utf-8")))
-
-                
-                #s.sendall(bytes('[Unity:R='.encode("utf-8")) + bytes(str(Rpose).encode("utf-8")) + bytes(']'.encode("utf-8")))
                 s.sendall(bytes(('[Unity:R=' + str(Rpose) + ']').encode("utf-8")))
-
-                
-                #s.sendall(bytes('[Unity:Ji='.encode("utf-8")) + bytes(str(J1angle).encode("utf-8")) + bytes(']'.encode("utf-8")))
                 s.sendall(bytes(('[Unity:Ji=' + str(J1angle) + ']').encode("utf-8")))
-
-                
-                #s.sendall(bytes('[Unity:Jii='.encode("utf-8")) + bytes(str(J2angle).encode("utf-8")) + bytes(']'.encode("utf-8")))
                 s.sendall(bytes(('[Unity:Jii=' + str(J2angle) + ']').encode("utf-8")))
-
-                
-                #s.sendall(bytes('[Unity:Jiii='.encode("utf-8")) + bytes(str(J3angle).encode("utf-8")) + bytes(']'.encode("utf-8")))
                 s.sendall(bytes(('[Unity:Jiii=' + str(J3angle) + ']').encode("utf-8")))
-
-                
-                #s.sendall(bytes('[Unity:Jiv='.encode("utf-8")) + bytes(str(J4angle).encode("utf-8")) + bytes(']'.encode("utf-8")))
                 s.sendall(bytes(('[Unity:Jiv=' + str(Rpose) + ']').encode("utf-8")))
 
 
@@ -117,10 +100,9 @@ def Thread1():
 #---------------------------------------Thread รับข้อความจาก server-----------------------------
 def Thread2(): 
 
+    #บอกให้รู้ว่านี้คือตัวแปร global
     global api
     global s
-
-
 
     global J1angle
     global J2angle
@@ -130,16 +112,10 @@ def Thread2():
     global ExitCon
     global ConnectCon
 
-
+    #ดักเวลากดออกจะได้หลุด Loop
     while ExitCon==False:
 
-
-        #msg = s.recv(1024)
-        #alldata = msg.decode("utf-8")
-        #print('Received : ', alldata )
-        #while (ExitCon==False) and (ConnectCon==False):
-            #print("1")
-
+        #วนดูทีละคำสั่งจากการ Steam ค่าจาก Server 1ครั้ง
         while(alldata.find(']')!=-1) and (ExitCon==False) and (ConnectCon==True):
                 
             s.sendall(bytes('[Unity:Hold]'.encode("utf-8")))
@@ -149,7 +125,10 @@ def Thread2():
             x=250
             y=0
             z=0
-                
+
+            #เช็คคำสั่งต่างๆที่ได้รับมาจาก Server
+             
+            #ขยับแกน x,y,z   
             if(onedata=="[Unity:Xpos]"):
                 dType.SetPTPCmdEx(api, 7, 200,  0,  0, 0, 1)
             if(onedata=="[Unity:Xneg]"):
@@ -167,6 +146,7 @@ def Thread2():
             if(onedata=="[Unity:Rneg]"):
                 dType.SetPTPCmdEx(api, 7, 0,  0,  0, (-200), 1)
 
+            #ขยับ Joint
             if(onedata=="[Unity:J1pos]"):
                 current_pose = dType.GetPose(api)
                 dType.SetPTPCmdEx(api, 4, J1angle+90,  J2angle,  J3angle, current_pose[7], 1)
@@ -189,11 +169,13 @@ def Thread2():
             if(onedata=="[Unity:J4neg]"):
                 dType.SetPTPCmdEx(api, 7, 0,  0,  0, (-200), 1)
 
+            #เปิด/ปิด ที่ดูด
             if(onedata=="[Unity:ONCUP]"):
                 dType.SetEndEffectorSuctionCupEx(api, 1, 1)
             if(onedata=="[Unity:OFFCUP]"):
                 dType.SetEndEffectorSuctionCupEx(api, 0, 1)
 
+            #ขยับแบบ MOV โดยกรองค่า x,y,z
             if("[Unity:MOV," in onedata):
                                  
                 x=onedata[onedata.find(',')+1:onedata.find('!')]
@@ -209,7 +191,8 @@ def Thread2():
 
                 current_pose = dType.GetPose(api)
                 dType.SetPTPCmdEx(api, 2, int(x),  int(y),  int(z), current_pose[3], 1)
-                
+
+            #ขยับแบบ JUMP โดยกรองค่า x,y,z    
             if("[Unity:JUMP," in onedata):  
 
                 x=onedata[onedata.find(',')+1:onedata.find('!')]
@@ -225,6 +208,7 @@ def Thread2():
 
                 dType.SetPTPCmdEx(api, 0, int(x),  int(y),  int(z), 0, 1)
 
+            #กลับไปที่ Home
             if(onedata=="[Unity:Home]"):
                 dType.SetHOMECmdEx(api, 0, 1)
 
@@ -238,23 +222,23 @@ def Thread2():
 #---------------------------------------thread stop--------------------------------------
 def Thread3():
 
+    #บอกให้รู้ว่านี้คือตัวแปร global
     global ExitCon
     global ConnectCon
     global alldata
 
-
+    #ดักเวลากดออกจะได้หลุด Loop
     while ExitCon==False:
 
+        #รับค่า จาก Server
         msg = s.recv(1024)
         alldata = msg.decode("utf-8")
         print('Received : ', alldata )
 
         if("[Unity:Stop]" in alldata): 
-            #dType.SetQueuedCmdStopExec(api)
+
             dType.SetQueuedCmdForceStopExec(api)
-            #Clean Command Queued
             dType.SetQueuedCmdClear(api)
-            #Start to Execute Command Queued
             dType.SetQueuedCmdStartExec(api)
 
             #continue
@@ -265,17 +249,10 @@ def Thread3():
 
         if("[Unity:CONNECT]" in alldata):
 
-            #Start to Execute Command Queued
-            #dType.SetQueuedCmdStartExec(api)
-
             ConnectCon=True
 
         
         if("[Unity:DISCONNECT]" in alldata): 
-            #dType.SetQueuedCmdStopExec(api)
-            #dType.SetQueuedCmdForceStopExec(api)
-            #Clean Command Queued
-            #dType.SetQueuedCmdClear(api)
 
             ConnectCon=False
 
@@ -295,6 +272,7 @@ def Thread3():
             
 #----------------------------------------main thread-------------------------------------------
 
+#กำหนดว่า ฟังก์ชั่นไหนเป็น Thread บ้าง
 ThreadSend = Thread(target=Thread1)
 ThreadRead = Thread(target=Thread2)
 ThreadStop = Thread(target=Thread3)
@@ -302,27 +280,19 @@ ThreadStop = Thread(target=Thread3)
 #connect socket
 HOST = 'localhost'  # The servers hostname or IP address
 PORT = 1150        # The port used by the server
-
 s.connect((HOST, PORT)) 
+
+#เริ่ม Thread
 ThreadStop.start()
 ThreadRead.start()
 ThreadSend.start()
 
-
-#------------------------รอ connect server------------------------------------------
-#while True:
-    #if data == "[SERVER:CONNECTED]":
-        #s.sendall(bytes('[Dobot:REG]'.encode("utf-8")))
-        #break
-    #else : 
-        #print("Connecting....")
-        #time.sleep(1)
-        #s.connect((HOST, PORT)) 
-
 #------------------------รอคำสั่ง connect จาก Unity------------------------------------
+
+#ดักเวลากดออกจะได้หลุด Loop
 while ExitCon==False:
     
-
+    #เมื่อกด Connect
     while(ConnectCon==True) and (ExitCon==False):
         #เริ่มรับส่งข้อมูลกับ Unity
         #Connect Dobot
@@ -336,7 +306,7 @@ while ExitCon==False:
             #Clean Command Queued
             dType.SetQueuedCmdClear(api)
 
-            #Async Motion Params Setting
+            #Async Motion Params Setting เซ็ตค่า
             dType.SetEndEffectorSuctionCupEx(api, 0, 1)
             dType.SetHOMEParams(api, 250, 0, 50, 0, isQueued = 1)
             dType.SetPTPJointParams(api, 200, 100, 200, 100, 200, 100, 200, 100, isQueued = 1)
@@ -348,6 +318,7 @@ while ExitCon==False:
             #Start to Execute Command Queued
             dType.SetQueuedCmdStartExec(api)
 
+            #วนทำงานจนกว่าจะกดออก
             while True:
                 if(ConnectCon==False) or (ExitCon==True):
                     #Stop to Execute Command Queued
