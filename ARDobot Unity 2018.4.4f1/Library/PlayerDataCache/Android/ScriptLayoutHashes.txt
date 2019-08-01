@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-C:/Users/SP_ONE/Desktop/blog/dobot.apk
+C:/Users/SP_ONE/Desktop/blog/dobotfinal.apk
 SceneListBegin?
 Assets/scence/OP.unity
 SceneListEnd?
